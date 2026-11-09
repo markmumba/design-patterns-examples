@@ -9,4 +9,24 @@ public class SeaTransport implements ModeOfTransport {
 		resp.setValue(message);
 		return resp;
 	}
+
+	@Override
+	public String name() {
+		return "Ship";
+	}
+
+	@Override
+	public int capacityTonnes() {
+		return 5000;
+	}
+
+	@Override
+	public double costPerKm() {
+		return 15.0;
+	}
+
+	@Override
+	public String book() {
+		return "Container slot booked at Mombasa port";
+	}
 }

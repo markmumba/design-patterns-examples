@@ -14,7 +14,12 @@ public class Main {
         oldWay(transportType);
         simpleFactory(transportType);
         factoryMethod(transportType);
+        bigWorkflowComparison(transportType);
     }
+
+    // Shipment used by the workflow examples.
+    static final int TONNES = 50;
+    static final int KM = 300;
 
     // =====================================================================
     // 1. OLD WAY: no factory
@@ -62,7 +67,7 @@ public class Main {
     }
 
     // =====================================================================
-    // 3. FACTORY METHOD (the GoF pattern)
+    // 3. FACTORY METHOD
     // Logistics (abstract creator) declares createTransport().
     // RoadLogistics / SeaLogistics each override it and return ONE transport.
     // No if-chain inside the creators: the subclass IS the decision.
@@ -86,7 +91,26 @@ public class Main {
 
         // Main only talks to the abstract Logistics.
         // planDelivery() calls createTransport() -> subclass decides what gets built.
-        TransportResponse response = logistics.planDelivery();
+        TransportResponse response = logistics.planDelivery(TONNES, KM);
         System.out.println(response.getValue());
+    }
+
+    // =====================================================================
+    // 4. BIG WORKFLOW: old way vs factory method, side by side
+    // Same 5 steps (create, trips, cost, booking, dispatch), same output.
+    //
+    //   Old way (OldWayDelivery):        5 if-chains inside the workflow
+    //   Factory method (Logistics):      0 if-chains inside the workflow
+    //                                    + 1 at the entry point (above)
+    //
+    // Adding AirTransport:
+    //   Old way        -> edit 5 if-chains in OldWayDelivery
+    //   Factory method -> add AirTransport + AirLogistics,
+    //                     add 1 else-if at the entry point,
+    //                     Logistics.planDelivery() is NOT touched
+    // =====================================================================
+    static void bigWorkflowComparison(String transportType) {
+        System.out.println("\n--- 4. Same workflow, old way (compare with section 3's [LOG] lines) ---");
+        OldWayDelivery.planDelivery(transportType, TONNES, KM);
     }
 }
